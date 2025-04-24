@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Better GMGN.ai
-// @namespace    https://github.com/yvvw/browser-scripts
-// @homepageURL  https://github.com/yvvw/browser-scripts/blob/main/src/gmgn_ai.user.ts
-// @version      0.0.18
+// @namespace    https://github.com/0xseven7/inhancement
+// @homepageURL  https://github.com/0xseven7/inhancement/blob/main/src/gmgn_ai.user.ts
+// @version      0.0.19
 // @description  调整屏宽
-// @author       yvvw
+// @author       0xseven7
 // @icon         https://gmgn.ai/static/favicon2.ico
 // @license      MIT
-// @updateURL    https://mirror.ghproxy.com/https://github.com/yvvw/browser-scripts/releases/download/latest/gmgn_ai.meta.js
-// @downloadURL  https://mirror.ghproxy.com/https://github.com/yvvw/browser-scripts/releases/download/latest/gmgn_ai.user.js
+// @updateURL    https://mirror.ghproxy.com/https://github.com/0xseven7/inhancement/releases/download/latest/gmgn_ai.meta.js
+// @downloadURL  https://mirror.ghproxy.com/https://github.com/0xseven7/inhancement/releases/download/latest/gmgn_ai.user.js
 // @match        https://gmgn.ai/*
 // @grant        GM_openInTab
 // @noframes
@@ -18,7 +18,7 @@ import { HTMLUtils, Logger } from './util'
 
 const logger = Logger.new('Better DEX Screener')
 function main() {
-  console.log('Better14 GMGN.ai')
+  console.log('Better1 GMGN.ai')
   HTMLUtils.observe(
     document.body,
     async () => {
@@ -80,11 +80,26 @@ function createFloatingWindow() {
   saveButton.style.setProperty('color', '#00ff00')
   
   saveButton.addEventListener('click', () => {
-    const walletMark = localStorage.getItem('wallet_mark')
+    let walletMark = localStorage.getItem('wallet_mark')
+    if (!walletMark) {
+      // 如果 wallet_mark 不存在，尝试从 wallet_mark_multichain 中获取 sol 数据
+      const multichain = localStorage.getItem('wallet_mark_multichain')
+      if (multichain) {
+        try {
+          const multichainData = JSON.parse(multichain)
+          if (multichainData.sol) {
+            walletMark = JSON.stringify(multichainData.sol)
+          }
+        } catch (e) {
+          console.error('解析 wallet_mark_multichain 失败:', e)
+        }
+      }
+    }
+
     const parserdData = parserData(walletMark)
     if (walletMark) {
       // 创建一个 Blob 对象
-      const blob = new Blob([walletMark], { type: 'text/plain' })
+      const blob = new Blob([parserdData], { type: 'text/plain' })
       // 创建下载链接
       const downloadLink = document.createElement('a')
       downloadLink.href = URL.createObjectURL(blob)
@@ -96,7 +111,7 @@ function createFloatingWindow() {
       // 释放 URL 对象
       URL.revokeObjectURL(downloadLink.href)
     } else {
-      alert('未找到 wallet_mark 数据')
+      alert('未找到钱包标记数据')
     }
   })
   
@@ -164,8 +179,18 @@ function createFloatingWindow() {
   })
 }
 function parserData(walletMark: string| null) {
-  // remove {} "" 
-  return walletMark ?  walletMark.replace(/\{|\}/g, '').replace(/\"/g, '') :''
+  if (!walletMark) return ''
+  
+  // 移除 {} 和 ""
+  const cleanData = walletMark.replace(/[{}"]/g, '')
+  
+  // 按逗号分割成数组，每个元素就是一行数据
+  const lines = cleanData.split(',')
+  
+  // 过滤掉空行，并用换行符连接
+  return lines
+    .filter(line => line.trim())
+    .join('\n')
 }
 
 
