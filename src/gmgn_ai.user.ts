@@ -7,8 +7,8 @@
 // @author       0xseven7
 // @icon         https://gmgn.ai/static/favicon2.ico
 // @license      MIT
-// @updateURL    https://mirror.ghproxy.com/https://github.com/0xseven7/inhancement/releases/download/latest/gmgn_ai.meta.js
-// @downloadURL  https://mirror.ghproxy.com/https://github.com/0xseven7/inhancement/releases/download/latest/gmgn_ai.user.js
+// @updateURL    https://ghfast.top/https://github.com/0xseven7/inhancement/releases/download/latest/gmgn_ai.meta.js
+// @downloadURL  https://ghfast.top/https://github.com/0xseven7/inhancement/releases/download/latest/gmgn_ai.user.js
 // @match        https://gmgn.ai/*
 // @grant        GM_openInTab
 // @noframes
@@ -19,6 +19,9 @@ import { HTMLUtils, Logger } from './util'
 const logger = Logger.new('Better DEX Screener')
 function main() {
   console.log('Better1 GMGN.ai')
+  // 添加 body padding
+  document.body.style.setProperty('padding', '0 0 0 260px')
+  
   HTMLUtils.observe(
     document.body,
     async () => {
