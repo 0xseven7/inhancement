@@ -20,7 +20,7 @@ const logger = Logger.new('Better DEX Screener')
 function main() {
   console.log('Better1 GMGN.ai')
   // 添加 body padding
-  document.body.style.setProperty('padding', '0 0 0 260px')
+  document.body.style.setProperty('margin', '0 0 0 260px')
   
   HTMLUtils.observe(
     document.body,
